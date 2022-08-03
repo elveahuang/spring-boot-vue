@@ -1,0 +1,88 @@
+plugins {
+    id 'org.springframework.boot' version '3.0.0-M4' apply false
+    id 'io.spring.dependency-management' version '1.0.12.RELEASE' apply false
+    id "com.github.node-gradle.node" version "3.4.0" apply false
+    id "com.github.spotbugs" version "5.0.8" apply false
+}
+
+configure(allprojects) { project ->
+    apply plugin: 'io.spring.dependency-management'
+
+    repositories {
+        maven { url "https://maven.aliyun.com/repository/public" }
+        maven { url 'https://maven.aliyun.com/repository/spring' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://repo.spring.io/milestone' }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.boot:spring-boot-dependencies:3.0.0-M4")
+            mavenBom("org.springframework.cloud:spring-cloud-dependencies:2022.0.0-M4")
+            mavenBom("de.codecentric:spring-boot-admin-dependencies:3.0.0-M4")
+            mavenBom("org.apache.logging.log4j:log4j-bom:2.18.0")
+            mavenBom("me.ahoo.cosid:cosid-bom:1.13.0")
+            mavenBom("org.junit:junit-bom:5.8.2")
+        }
+        dependencies {
+            dependencySet(group: 'org.mapstruct', version: '1.5.2.Final') {
+                entry 'mapstruct'
+                entry 'mapstruct-processor'
+            }
+        }
+    }
+}
+
+configure(subprojects) { project ->
+    apply plugin: 'idea'
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'com.github.node-gradle.node'
+
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+
+    jar {
+        enabled = true
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    node {
+        download = false
+        version = "16.16.0"
+    }
+
+    dependencies {
+        // test
+        testImplementation("org.springframework.boot:spring-boot-starter-test")
+        testImplementation("org.springframework.security:spring-security-test")
+        testImplementation("org.springframework:spring-webflux")
+        testImplementation("org.junit.jupiter:junit-jupiter-api")
+        testImplementation("org.junit.jupiter:junit-jupiter-engine")
+        // mapstruct & lombok
+        implementation("org.mapstruct:mapstruct")
+        implementation("org.projectlombok:lombok")
+        annotationProcessor("org.mapstruct:mapstruct-processor")
+        annotationProcessor("org.projectlombok:lombok")
+        testImplementation("org.mapstruct:mapstruct")
+        testImplementation("org.projectlombok:lombok")
+        testAnnotationProcessor("org.mapstruct:mapstruct-processor")
+        testAnnotationProcessor("org.projectlombok:lombok")
+    }
+
+    tasks.withType(Checkstyle) {
+        reports {
+            xml.enabled false
+            html.enabled true
+        }
+    }
+
+    defaultTasks = ['clean', 'build']
+}
