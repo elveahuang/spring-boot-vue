@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '3.0.0-M4' apply false
+    id 'org.springframework.boot' version '3.0.0-M5' apply false
     id 'io.spring.dependency-management' version '1.0.12.RELEASE' apply false
     id "com.github.node-gradle.node" version "3.4.0" apply false
     id "com.github.spotbugs" version "5.0.8" apply false
@@ -19,7 +19,7 @@ configure(allprojects) { project ->
 
     dependencyManagement {
         imports {
-            mavenBom("org.springframework.boot:spring-boot-dependencies:3.0.0-M4")
+            mavenBom("org.springframework.boot:spring-boot-dependencies:3.0.0-M5")
             mavenBom("org.springframework.cloud:spring-cloud-dependencies:2022.0.0-M4")
             mavenBom("de.codecentric:spring-boot-admin-dependencies:3.0.0-M4")
             mavenBom("org.apache.logging.log4j:log4j-bom:2.18.0")
